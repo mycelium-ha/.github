@@ -1,0 +1,57 @@
+name: Reusable HA Validation
+
+on:
+  workflow_call:
+    inputs:
+      hacs_category:
+        description: "Marketplace/HACS repository category (integration, plugin, template, theme)"
+        required: false
+        default: "integration"
+        type: string
+      hacs_ignore:
+        description: "Space-separated list of HACS checks to ignore (optional)"
+        required: false
+        default: ""
+        type: string
+      run_hassfest:
+        description: "Run hassfest validation (only for integrations)"
+        required: false
+        default: true
+        type: boolean
+      run_ruff:
+        description: "Run ruff lint and format checks"
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  hassfest:
+    if: ${{ inputs.run_hassfest }}
+    name: Validate with hassfest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: home-assistant/actions/hassfest@master
+
+  marketplace:
+    name: Validate for HA Marketplace (HACS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hacs/action@main
+        with:
+          category: ${{ inputs.hacs_category }}
+          ignore: ${{ inputs.hacs_ignore }}
+
+  ruff:
+    if: ${{ inputs.run_ruff }}
+    name: Lint & Format (Ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v3
+        with:
+          args: "check"
+      - uses: astral-sh/ruff-action@v3
+        with:
+          args: "format --check"
