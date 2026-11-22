@@ -1,1 +1,8 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Questions & help
+    url: https://community.home-assistant.io/
+    about: General questions about using Home Assistant belong in the Home Assistant community forum.
+  - name: Security vulnerability
+    url: https://github.com/mycelium-ha/.github/blob/main/SECURITY.md
+    about: Please report security issues privately, never as a public issue.

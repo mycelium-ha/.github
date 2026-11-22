@@ -2,7 +2,27 @@
 
 Thanks for considering a contribution!
 
-## Before Opening a Pull Request
+## Development setup
+
+Most repositories follow the [integration template](https://github.com/mycelium-ha/integration-template):
+
+```bash
+python3.14 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements_test.txt
+pip install pre-commit && pre-commit install
+```
+
+Run the checks locally before pushing:
+
+```bash
+ruff check . && ruff format --check .
+mypy
+python scripts/check_translations.py
+pytest --cov
+```
+
+## Before opening a pull request
 
 1. Open an issue first for larger changes or new features so we can align on the approach.
 2. Keep pull requests focused on a single topic.
@@ -10,4 +30,11 @@ Thanks for considering a contribution!
    - `hassfest` validation
    - Home Assistant Marketplace / HACS validation
    - `ruff check` and `ruff format --check`
-4. Update documentation (`README.md`, `strings.json`, translations) if behavior or configuration changes.
+   - `mypy` and `pytest` (where the repository has them)
+   - translation parity (`strings.json` and every file in `translations/`)
+4. Add or update tests for changed behavior.
+5. Update documentation (`README.md`, `strings.json`, translations) and `quality_scale.yaml` if behavior or configuration changes.
+
+## Releases
+
+Maintainers bump `version` in `manifest.json`, merge, and push a matching `vX.Y.Z` tag. The release workflow verifies the version and publishes the GitHub release.
