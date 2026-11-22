@@ -1,6 +1,12 @@
 # Contributing to mycelium-ha
 
-Thanks for considering a contribution!
+Thanks for considering a contribution! You don't need to write Python to help.
+
+## Other ways to help
+
+- **Translations:** every integration keeps its texts in `custom_components/<domain>/translations/<language>.json`. Copy `en.json`, translate the values (keep the keys and `{placeholders}`), and open a pull request. GitHub's web editor is enough.
+- **Testing devices:** if you own a device an integration supports, or one it could support, open an issue with the model and the diagnostics download. Reports like this decide what we build next.
+- **Reporting bugs:** a clear bug report with diagnostics and debug logs is often half the fix.
 
 ## Development setup
 
