@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- mycelium-ha mark: a solid house divided into organic cells by a hyphal
+       network; the warm node is the hub where everything connects. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#11332C"/>
+      <stop offset="1" stop-color="#0A1F1B"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#A6F6D1"/>
+      <stop offset="1" stop-color="#33BC96"/>
+    </linearGradient>
+    <!-- Outer edge of the house (outline offset by half the 64px stroke), so the
+         cut lines end exactly at it. No line reaches a corner, so mitred corners
+         are fine here. -->
+    <clipPath id="house-clip">
+      <path d="M512 158.1 L 816 415.2 L 816 832 L 208 832 L 208 415.2 Z"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- House with rounded corners -->
+  <path d="M512 200 L 784 430 L 784 800 L 240 800 L 240 430 Z"
+        fill="url(#mark)" stroke="url(#mark)" stroke-width="64" stroke-linejoin="round"/>
+
+  <!-- Network cut into the house -->
+  <g clip-path="url(#house-clip)">
+    <g fill="none" stroke="#0F2C26" stroke-width="24" stroke-linecap="round">
+      <path d="M424 476 C 494 474, 566 500, 618 534"/>
+      <path d="M618 534 C 590 596, 552 646, 494 676"/>
+      <path d="M494 676 C 452 612, 428 546, 424 476"/>
+      <path d="M424 476 C 396 404, 364 344, 312 280"/>
+      <path d="M424 476 C 350 486, 270 508, 150 544"/>
+      <path d="M618 534 C 650 444, 684 372, 740 300"/>
+      <path d="M618 534 C 706 586, 770 638, 880 700"/>
+      <path d="M494 676 C 500 740, 496 800, 486 900"/>
+    </g>
+  </g>
+
+  <!-- Junctions -->
+  <g fill="#0F2C26">
+    <circle cx="424" cy="476" r="38"/>
+    <circle cx="618" cy="534" r="38"/>
+    <circle cx="494" cy="676" r="46"/>
+  </g>
+  <circle cx="494" cy="676" r="25" fill="#F6B94B"/>
+</svg>
