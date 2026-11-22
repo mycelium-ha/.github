@@ -66,6 +66,9 @@ The [integration template](https://github.com/mycelium-ha/integration-template) 
 | `python_version` | `3.14` | Python for mypy/pytest |
 | `requirements_file` | `requirements_test.txt` | Test and tooling dependencies |
 | `min_ha_requirements_file` | `""` | Requirements pinning the minimum supported Home Assistant; enables an extra test job |
+| `min_ha_pytest_args` | `""` | Extra pytest arguments for the minimum-HA job, e.g. `-k "not snapshot"` for snapshots pinned to the test HA |
+| `run_coverage_check` | `false` | After pytest, run `scripts/check_coverage.py coverage.json` (per-module coverage); `pytest_args` must include `--cov-report=json` |
+| `run_ha_latest` | `false` | Extra job against the newest stable Home Assistant without pytest: `scripts/check_ha_compat.py` if present, `mypy` if `run_mypy`. Not a required check, so a new HA release cannot block merges |
 
 ### Home Assistant beta
 
@@ -82,6 +85,14 @@ The [integration template](https://github.com/mycelium-ha/integration-template) 
     jobs:
       beta:
         uses: mycelium-ha/.github/.github/workflows/ha-beta.yml@main
+
+| Input | Default | Description |
+| --- | --- | --- |
+| `python_version` | `3.14` | Python version |
+| `requirements_file` | `requirements_test.txt` | Test dependencies |
+| `pytest_args` | `""` | Extra pytest arguments, e.g. `-k "not snapshot"` |
+| `run_ha_compat` | `false` | Extra job against the newest Home Assistant pre-release without pytest (the harness often lags behind): `scripts/check_ha_compat.py` if present |
+| `run_mypy` | `false` | Run `mypy` in that job |
 
 ### Release
 

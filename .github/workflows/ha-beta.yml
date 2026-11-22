@@ -22,6 +22,16 @@ on:
         required: false
         default: ""
         type: string
+      run_ha_compat:
+        description: "Also check the newest Home Assistant pre-release without pytest: scripts/check_ha_compat.py if present, and mypy if run_mypy"
+        required: false
+        default: false
+        type: boolean
+      run_mypy:
+        description: "Run mypy in the compatibility job"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -51,3 +61,33 @@ jobs:
         # eval keeps shell quoting in pytest_args (e.g. -k "not snapshot"); the value
         # comes from the calling workflow file, never from user-controlled events.
         run: eval "pytest $PYTEST_ARGS"
+
+  compat-beta:
+    if: ${{ inputs.run_ha_compat }}
+    name: Compatibility with Home Assistant beta
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ inputs.python_version }}
+      # The harness often lags behind a Home Assistant pre-release, so this job checks
+      # the pre-release itself without pytest: importing every module shows the
+      # deprecation warnings Home Assistant logs, mypy shows typing changes.
+      - name: Install the newest Home Assistant pre-release and mypy
+        env:
+          REQUIREMENTS: ${{ inputs.requirements_file }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install --pre homeassistant $(grep -E '^mypy==' "$REQUIREMENTS" || echo mypy)
+          python -c "from homeassistant.const import __version__; print('Home Assistant', __version__)"
+      - name: Import every module and fail on deprecated Home Assistant APIs
+        run: |
+          if [ -f scripts/check_ha_compat.py ]; then
+            python scripts/check_ha_compat.py
+          else
+            echo "::notice::scripts/check_ha_compat.py not found, skipping the import check"
+          fi
+      - name: Type-check with mypy
+        if: ${{ inputs.run_mypy }}
+        run: mypy
