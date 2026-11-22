@@ -93,11 +93,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       # Uses the ruff version pinned in the requirements file (falls back to latest).
-      - uses: astral-sh/ruff-action@v4
+      # ruff-action publishes no floating major tag, so pin the exact release.
+      - uses: astral-sh/ruff-action@v4.1.0
         with:
           args: "check"
           version-file: ${{ inputs.requirements_file }}
-      - uses: astral-sh/ruff-action@v4
+      - uses: astral-sh/ruff-action@v4.1.0
         with:
           args: "format --check"
           version-file: ${{ inputs.requirements_file }}
