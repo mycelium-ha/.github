@@ -1,5 +1,10 @@
 name: Reusable HA Validation
 
+# Shared validation for every mycelium-ha repository.
+# Always: hassfest (integrations), Marketplace/HACS validation, ruff.
+# Opt-in: translation parity, mypy, pytest (with coverage) and pytest on the
+# minimum supported Home Assistant version.
+
 on:
   workflow_call:
     inputs:
@@ -23,6 +28,44 @@ on:
         required: false
         default: true
         type: boolean
+      run_translations:
+        description: "Run scripts/check_translations.py if the repository has it"
+        required: false
+        default: true
+        type: boolean
+      run_mypy:
+        description: "Run mypy (configured in pyproject.toml) with the test requirements installed"
+        required: false
+        default: false
+        type: boolean
+      run_pytest:
+        description: "Run pytest with the test requirements installed"
+        required: false
+        default: false
+        type: boolean
+      pytest_args:
+        description: "Extra arguments for pytest, e.g. --cov"
+        required: false
+        default: ""
+        type: string
+      python_version:
+        description: "Python version for mypy and pytest"
+        required: false
+        default: "3.14"
+        type: string
+      requirements_file:
+        description: "Requirements file with the test and tooling dependencies"
+        required: false
+        default: "requirements_test.txt"
+        type: string
+      min_ha_requirements_file:
+        description: "Requirements file pinning the minimum supported Home Assistant; empty skips that job"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
 
 jobs:
   hassfest:
@@ -30,14 +73,14 @@ jobs:
     name: Validate with hassfest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: home-assistant/actions/hassfest@master
 
   marketplace:
     name: Validate for HA Marketplace (HACS)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: hacs/action@main
         with:
           category: ${{ inputs.hacs_category }}
@@ -48,10 +91,78 @@ jobs:
     name: Lint & Format (Ruff)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
+      - uses: actions/checkout@v7
+      # Uses the ruff version pinned in the requirements file (falls back to latest).
+      # ruff-action publishes no floating major tag, so pin the exact release.
+      - uses: astral-sh/ruff-action@v4.1.0
         with:
           args: "check"
-      - uses: astral-sh/ruff-action@v3
+          version-file: ${{ inputs.requirements_file }}
+      - uses: astral-sh/ruff-action@v4.1.0
         with:
           args: "format --check"
+          version-file: ${{ inputs.requirements_file }}
+
+  translations:
+    if: ${{ inputs.run_translations }}
+    name: Translation parity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ inputs.python_version }}
+      - name: Check strings.json against translations/
+        run: |
+          if [ -f scripts/check_translations.py ]; then
+            python scripts/check_translations.py
+          else
+            echo "::notice::scripts/check_translations.py not found, skipping translation parity check"
+          fi
+
+  python:
+    if: ${{ inputs.run_mypy || inputs.run_pytest }}
+    name: Type check & tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ inputs.python_version }}
+          cache: pip
+          cache-dependency-path: ${{ inputs.requirements_file }}
+      - name: Install test dependencies
+        env:
+          REQUIREMENTS: ${{ inputs.requirements_file }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r "$REQUIREMENTS"
+      - name: Type-check with mypy
+        if: ${{ inputs.run_mypy }}
+        run: mypy
+      - name: Run pytest
+        if: ${{ inputs.run_pytest }}
+        env:
+          PYTEST_ARGS: ${{ inputs.pytest_args }}
+        # eval keeps shell quoting in pytest_args (e.g. -k "not slow"); the value
+        # comes from the calling workflow file, never from user-controlled events.
+        run: eval "pytest $PYTEST_ARGS"
+
+  python-min-ha:
+    if: ${{ inputs.run_pytest && inputs.min_ha_requirements_file != '' }}
+    name: Tests on minimum Home Assistant
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ inputs.python_version }}
+      - name: Install test dependencies (minimum HA)
+        env:
+          REQUIREMENTS: ${{ inputs.min_ha_requirements_file }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r "$REQUIREMENTS"
+          python -c "from homeassistant.const import __version__; print('Home Assistant', __version__)"
+      - name: Run pytest
+        run: pytest

@@ -6,6 +6,8 @@ body:
     attributes:
       value: |
         Thanks for taking the time to report a bug! Please provide as much detail as possible.
+
+        **Do not post passwords, tokens, device IDs, serial numbers or IP addresses.** The diagnostics download redacts them and is safe to attach.
   - type: input
     id: ha_version
     attributes:
@@ -17,7 +19,8 @@ body:
     id: integration_version
     attributes:
       label: Integration Version
-      placeholder: "e.g. 0.1.0"
+      description: Settings > Marketplace, or `version` in the integration's `manifest.json`.
+      placeholder: "e.g. 1.2.0"
     validations:
       required: true
   - type: dropdown
@@ -49,8 +52,14 @@ body:
     validations:
       required: true
   - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Settings > Devices & services > the integration > ⋮ > **Download diagnostics**. Drag the file here.
+  - type: textarea
     id: logs
     attributes:
       label: Debug Logs
-      description: Enable debug logging for this integration in Home Assistant and paste the relevant log lines here.
+      description: |
+        Settings > Devices & services > the integration > ⋮ > **Enable debug logging**, reproduce the problem, then disable debug logging to download the log. Paste the relevant lines here.
       render: text
