@@ -1,0 +1,46 @@
+name: Device Support Request
+description: Ask for a device or model to be supported
+labels: ["device-support"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us support more devices! The more details you share, the faster we can add it.
+
+        **Do not post passwords, tokens, device IDs or serial numbers.**
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: Manufacturer and exact model name or number.
+      placeholder: "e.g. Acme SmartPlug Mini (SP-200)"
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Current status
+      options:
+        - Not detected at all
+        - Detected, but some values or features are missing
+        - Detected, but values are wrong
+    validations:
+      required: true
+  - type: textarea
+    id: features
+    attributes:
+      label: What should it provide?
+      description: Which values or controls do you expect in Home Assistant (for example temperature, battery, a switch)?
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: If the integration already sees the device, attach the diagnostics download (Settings > Devices & services > the integration > ⋮ > **Download diagnostics**).
+  - type: checkboxes
+    id: testing
+    attributes:
+      label: Testing
+      options:
+        - label: I own this device and can test a development version.
