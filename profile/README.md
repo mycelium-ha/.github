@@ -17,6 +17,7 @@ Like a mycelium beneath the forest floor, our integrations connect the devices i
 
 | Integration | Devices | Connection | Status |
 | --- | --- | --- | --- |
+| [**free@home Local**](https://github.com/mycelium-ha/freeathome-local) | ABB-free@home and Busch-free@home (Busch-Jaeger), System Access Point 2.0 | Local, official API | Stable |
 | [**Mobile Alerts Cloud**](https://github.com/mycelium-ha/mobilealerts-cloud) | Technoline Mobile Alerts and TFA Dostmann WeatherHub sensors | Cloud, official API | Stable |
 
 More integrations are on the way.
