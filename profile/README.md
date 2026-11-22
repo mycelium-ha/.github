@@ -17,7 +17,7 @@ Like a mycelium beneath the forest floor, our integrations connect the devices i
 
 | Integration | Devices | Connection | Status |
 | --- | --- | --- | --- |
-| [**Mobile Alerts Cloud**](https://github.com/florianutz/mobilealerts-cloud) | Technoline Mobile Alerts and TFA Dostmann WeatherHub sensors | Cloud, official API | Stable |
+| [**Mobile Alerts Cloud**](https://github.com/mycelium-ha/mobilealerts-cloud) | Technoline Mobile Alerts and TFA Dostmann WeatherHub sensors | Cloud, official API | Stable |
 
 More integrations are on the way.
 
