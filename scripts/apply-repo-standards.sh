@@ -16,7 +16,8 @@
 # - team "maintainers" with the maintain role (needed for CODEOWNERS)
 # - ruleset "main": PR required (0 approvals, squash only), no force push or
 #   deletion, linear history, required CI checks when the repository has
-#   .github/workflows/validate.yml; org admins may bypass
+#   .github/workflows/validate.yml (incl. the minimum-HA job when configured);
+#   org admins may bypass
 # - ruleset "release tags": only org admins and maintainers create, move or
 #   delete v* tags
 #
@@ -71,6 +72,10 @@ if VALIDATE=$(gh api "repos/$FULL/contents/.github/workflows/validate.yml" \
     )
     if grep -Eq "run_(pytest|mypy): *true" <<<"$VALIDATE"; then
       CHECKS+=("validate / Type check & tests")
+    fi
+    if grep -Eq "min_ha_requirements_file: *[^ \"']" <<<"$VALIDATE" \
+      && grep -Eq "run_pytest: *true" <<<"$VALIDATE"; then
+      CHECKS+=("validate / Tests on minimum Home Assistant")
     fi
   fi
 fi
