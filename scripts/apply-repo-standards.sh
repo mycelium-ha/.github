@@ -13,6 +13,7 @@
 # - merge: squash only (PR title/body), delete branch on merge, auto-merge,
 #   "update branch"; wiki and projects off
 # - private vulnerability reporting on
+# - standard labels (bug, enhancement, device-support, translations, ...)
 # - team "maintainers" with the maintain role (needed for CODEOWNERS)
 # - ruleset "main": PR required (0 approvals, squash only), no force push or
 #   deletion, linear history, required CI checks when the repository has
@@ -53,6 +54,25 @@ gh api -X PATCH "repos/$FULL" --silent \
 
 echo "==> $FULL: private vulnerability reporting"
 gh api -X PUT "repos/$FULL/private-vulnerability-reporting" --silent
+
+echo "==> $FULL: labels"
+# name|color|description; created or updated, existing other labels are kept.
+LABELS=(
+  "bug|d73a4a|Something isn't working"
+  "enhancement|a2eeef|New feature or improvement"
+  "device-support|0e8a16|Support for a new device or model"
+  "translations|c5def5|New or updated translations"
+  "documentation|0075ca|README, docs or code comments"
+  "dependencies|0366d6|Dependency updates"
+  "breaking-change|b60205|Requires users to change their setup"
+  "needs-info|fbca04|Waiting for more information from the reporter"
+  "question|d876e3|Further information is requested"
+)
+for entry in "${LABELS[@]}"; do
+  IFS='|' read -r name color description <<<"$entry"
+  gh label create "$name" --repo "$FULL" --color "$color" \
+    --description "$description" --force >/dev/null
+done
 
 echo "==> $FULL: team $TEAM (maintain)"
 gh api -X PUT "orgs/$ORG/teams/$TEAM/repos/$FULL" -f permission=maintain --silent

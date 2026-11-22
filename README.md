@@ -10,7 +10,7 @@ Repositories created from the template inherit neither settings nor rulesets nor
 
     scripts/apply-repo-standards.sh <repo>
 
-It sets squash-only merges, auto-merge and branch cleanup, private vulnerability reporting, `maintain` access for `@mycelium-ha/maintainers`, a `main` ruleset (PR required, required CI checks, no force push) and a `release tags` ruleset (only maintainers create `v*` tags). It is idempotent; re-run it after a repository enables `run_pytest`/`run_mypy` so "Type check & tests" becomes a required check.
+It sets squash-only merges, auto-merge and branch cleanup, private vulnerability reporting, standard labels (`bug`, `enhancement`, `device-support`, `translations`, `breaking-change`, `needs-info`, ...), `maintain` access for `@mycelium-ha/maintainers`, a `main` ruleset (PR required, required CI checks, no force push) and a `release tags` ruleset (only maintainers create `v*` tags). It is idempotent; re-run it after a repository enables `run_pytest`/`run_mypy` so "Type check & tests" becomes a required check.
 
 Org-wide and automatic for every repository: the "mycelium-ha standard" code security configuration (Dependabot alerts and security updates, secret scanning with push protection, CodeQL, private vulnerability reporting) and the allow-list of GitHub Actions.
 
