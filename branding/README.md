@@ -6,6 +6,7 @@ The mycelium-ha mark: a solid house divided into organic cells by a hyphal netwo
 | --- | --- |
 | [`avatar.svg`](avatar.svg) | Source (1024 × 1024 vector) |
 | [`avatar.png`](avatar.png) | Organization avatar (1024 × 1024) |
+| [`team-maintainers.svg`](team-maintainers.svg), [`team-maintainers.png`](team-maintainers.png) | Avatar of the `@mycelium-ha/maintainers` team (1024 × 1024): the mark with the palette inverted (amber ground, dark house, mint hub) |
 | [`banner-light.png`](banner-light.png), [`banner-dark.png`](banner-dark.png) | Profile README header (2560 × 640), shown by color scheme |
 | [`generate_banner.py`](generate_banner.py) | Regenerates both banners and their SVG sources |
 | [`social/`](social) | Social preview images (1280 × 640) per repository, made with [`generate_social_preview.py`](generate_social_preview.py); upload under the repository's Settings → General → Social preview |
